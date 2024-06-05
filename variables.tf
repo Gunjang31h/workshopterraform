@@ -6,8 +6,11 @@ variable "location" {
 variable "prefix" {
   description = "prefix of the deployment stage"
 }
-
-variable "vnetAdressSpace" {
-  description = "adress space for vnet"
-  type        = list(string)
+variable "resource_group_name" {
+  description = "rg-gunnugupta1999"
 }
+
+# variable "vnetAdressSpace" {
+# description = "adress space for vnet"
+# type        = list(string)
+# }
