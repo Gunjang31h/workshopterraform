@@ -1,15 +1,15 @@
 terraform {
   required_providers {
     azurerm = {
-        source = "hashicorp/azurerm"
-        version = "~>3.34.0"
+      source  = "hashicorp/azurerm"
+      version = "~>3.34.0"
     }
   }
   backend "azurerm" {
-      resource_group_name  = "rg-gunnugupta1999" # change to your rg name
-      storage_account_name = "backendstatestg" # change to your storage account name
-      container_name       = "statefile01" # change to your container name
-      key                  = "terraform.tfstate"
+    resource_group_name  = "rg-gunnugupta1999" # change to your rg name
+    storage_account_name = "backendstatestg"   # change to your storage account name
+    container_name       = "statefile01"       # change to your container name
+    key                  = "terraform.tfstate"
   }
 }
 
