@@ -6,8 +6,8 @@ terraform {
     }
   }
   backend "azurerm" {
-    resource_group_name  = "rg-gunnugupta1999" # change to your rg name
-    storage_account_name = "backendstatestg"   # change to your storage account name
+    resource_group_name  = var.state_resource_group_name
+    storage_account_name = var.state_storage_account_name
     container_name       = "statefile01"       # change to your container name
     key                  = "terraform.tfstate"
   }
