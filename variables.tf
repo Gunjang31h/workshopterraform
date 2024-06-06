@@ -6,8 +6,9 @@ variable "location" {
 variable "prefix" {
   description = "prefix of the deployment stage"
 }
+
 variable "resource_group_name" {
-  description = "rg-gunnugupta1999"
+  description = "name of the resource group"
 }
 
 # variable "vnetAdressSpace" {
