@@ -27,9 +27,3 @@ resource "azurerm_virtual_network" "name" {
   name                = "vnet-${var.prefix}"
   address_space       = var.vnetAdressSpace
 }
-# resource "azurerm_virtual_network" "vnet" {
-# name                = "${var.prefix}-vnet"
-# location            = azurerm_resource_group.rg.location
-# resource_group_name = azurerm_resource_group.rg.name
-# address_space       = var.vnetAdressSpace
-# }
