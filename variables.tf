@@ -11,7 +11,7 @@ variable "resource_group_name" {
   description = "name of the resource group"
 }
 
-# variable "vnetAdressSpace" {
-# description = "adress space for vnet"
-# type        = list(string)
-# }
+variable "vnetAdressSpace" {
+  description = "adress space for vnet"
+  type        = list(string)
+}
