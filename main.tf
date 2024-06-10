@@ -68,7 +68,7 @@ resource "azurerm_key_vault" "kv" {
 
 resource "azurerm_key_vault_secret" "admin_pw" {
   name         = "admin-pw"
-  value        = "your-secret-value" # Use a secure method to manage sensitive values
+  value        = "YourC0mpl3xP@ssword!" # Ensure this password is complex
   key_vault_id = azurerm_key_vault.kv.id
 }
 
