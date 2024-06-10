@@ -35,6 +35,37 @@ resource "azurerm_subnet" "subnets" {
   virtual_network_name = azurerm_virtual_network.vnet.name
   address_prefixes     = each.value.address
 }
+
+resource "azurerm_log_analytics_workspace" "law" {
+  name                = "law-${var.prefix}"
+  location            = var.location
+  resource_group_name = azurerm_resource_group.rg.name
+  sku                 = "PerGB2018"
+  retention_in_days   = 30
+}
+
+resource "azurerm_monitor_diagnostic_setting" "vnet-diagnostics" {
+  name                       = "vnet-diagnostics"
+  target_resource_id         = azurerm_virtual_network.vnet.id
+  log_analytics_workspace_id = azurerm_log_analytics_workspace.law.id
+
+  # log {
+  #   category = "allLogs"
+
+  #   retention_policy {
+  #     enabled = false
+  #   }
+  # }
+
+  metric {
+    category = "AllMetrics"
+
+    retention_policy {
+      enabled = false
+    }
+  }
+}
+
 resource "azurerm_key_vault" "kv" {
   name                      = "kv-${var.prefix}349787"
   location                  = var.location
@@ -43,6 +74,34 @@ resource "azurerm_key_vault" "kv" {
   tenant_id                 = data.azurerm_client_config.current.tenant_id
   enable_rbac_authorization = true
 }
+
+resource "azurerm_monitor_diagnostic_setting" "kv-diagnostics" {
+  name                       = "kv-diagnostics"
+  target_resource_id         = azurerm_key_vault.kv.id
+  log_analytics_workspace_id = azurerm_log_analytics_workspace.law.id
+
+  log {
+    category = "AuditEvent"
+
+    retention_policy {
+      enabled = false
+    }
+  }
+
+  metric {
+    category = "AllMetrics"
+
+    retention_policy {
+      enabled = false
+    }
+  }
+}
+
+data "azurerm_key_vault_secret" "admin-pw" {
+  name         = "admin-pw"
+  key_vault_id = azurerm_key_vault.kv.id
+}
+
 resource "azurerm_network_interface" "nic" {
   name                = "nic-${var.prefix}"
   location            = var.location
@@ -54,6 +113,7 @@ resource "azurerm_network_interface" "nic" {
     private_ip_address_allocation = "Dynamic"
   }
 }
+
 resource "azurerm_virtual_machine" "vm" {
   name                          = "vm-${var.prefix}"
   location                      = var.location
