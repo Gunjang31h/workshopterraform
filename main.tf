@@ -35,6 +35,14 @@ resource "azurerm_subnet" "subnets" {
   virtual_network_name = azurerm_virtual_network.vnet.name
   address_prefixes     = each.value.address
 }
+resource "azurerm_key_vault" "kv" {
+  name                      = "kv-${var.prefix}349787"
+  location                  = var.location
+  resource_group_name       = azurerm_resource_group.rg.name
+  sku_name                  = "standard"
+  tenant_id                 = data.azurerm_client_config.current.tenant_id
+  enable_rbac_authorization = true
+}
 
 resource "azurerm_virtual_machine" "vm" {
   name                          = "vm-${var.prefix}"
