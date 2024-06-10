@@ -5,17 +5,16 @@ terraform {
       version = "~>3.34.0"
     }
   }
-  backend "azurerm" {
-    resource_group_name  = var.state_resource_group_name
-    storage_account_name = var.state_storage_account_name
-    container_name       = "statefile01" # change to your container name
-    key                  = "terraform.tfstate"
-  }
+  backend "azurerm" {}
 }
 
 provider "azurerm" {
   features {}
+  skip_provider_registration = true
 }
+
+data "azurerm_client_config" "current" {}
+
 resource "azurerm_resource_group" "rg" {
   name     = var.resource_group_name
   location = var.location
