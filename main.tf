@@ -43,7 +43,17 @@ resource "azurerm_key_vault" "kv" {
   tenant_id                 = data.azurerm_client_config.current.tenant_id
   enable_rbac_authorization = true
 }
+resource "azurerm_network_interface" "nic" {
+  name                = "nic-${var.prefix}"
+  location            = var.location
+  resource_group_name = azurerm_resource_group.rg.name
 
+  ip_configuration {
+    name                          = "ipconfig1"
+    subnet_id                     = azurerm_subnet.subnets["subnet01"].id
+    private_ip_address_allocation = "Dynamic"
+  }
+}
 resource "azurerm_virtual_machine" "vm" {
   name                          = "vm-${var.prefix}"
   location                      = var.location
