@@ -48,14 +48,6 @@ resource "azurerm_monitor_diagnostic_setting" "vnet-diagnostics" {
   target_resource_id         = azurerm_virtual_network.vnet.id
   log_analytics_workspace_id = azurerm_log_analytics_workspace.law.id
 
-  # log {
-  #   category = "allLogs"
-
-  #   retention_policy {
-  #     enabled = false
-  #   }
-  # }
-
   metric {
     category = "AllMetrics"
 
@@ -72,6 +64,12 @@ resource "azurerm_key_vault" "kv" {
   sku_name                  = "standard"
   tenant_id                 = data.azurerm_client_config.current.tenant_id
   enable_rbac_authorization = true
+}
+
+resource "azurerm_key_vault_secret" "admin_pw" {
+  name         = "admin-pw"
+  value        = "your-secret-value" # Use a secure method to manage sensitive values
+  key_vault_id = azurerm_key_vault.kv.id
 }
 
 resource "azurerm_monitor_diagnostic_setting" "kv-diagnostics" {
@@ -97,7 +95,7 @@ resource "azurerm_monitor_diagnostic_setting" "kv-diagnostics" {
 }
 
 data "azurerm_key_vault_secret" "admin-pw" {
-  name         = "admin-pw"
+  name         = azurerm_key_vault_secret.admin_pw.name
   key_vault_id = azurerm_key_vault.kv.id
 }
 
@@ -120,23 +118,27 @@ resource "azurerm_virtual_machine" "vm" {
   network_interface_ids         = [azurerm_network_interface.nic.id]
   vm_size                       = "Standard_DS1_v2"
   delete_os_disk_on_termination = true
+
   storage_image_reference {
     publisher = "MicrosoftWindowsServer"
     offer     = "WindowsServer"
     sku       = "2022-datacenter-g2"
     version   = "latest"
   }
+
   storage_os_disk {
     name              = "osdisk"
     caching           = "ReadWrite"
     create_option     = "FromImage"
     managed_disk_type = "Standard_LRS"
   }
+
   os_profile {
     computer_name  = "host01"
     admin_username = "testadmin"
     admin_password = data.azurerm_key_vault_secret.admin-pw.value
   }
+
   os_profile_windows_config {
     provision_vm_agent = true
   }
